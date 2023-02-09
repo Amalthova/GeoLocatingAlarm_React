@@ -1,5 +1,5 @@
 import {useState, useEffect} from "react";
-import api from '../index.js';
+//import api from '../index.js';
 import React from 'react';
 import { AppRegistry } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
@@ -48,11 +48,9 @@ const requestLocationPermission = async () => {
 //Geolocation.setRNConfiguration(config);
 
 const getCurrentPosition = () => {
-  Geolocation.getCurrentPosition(info => console.log(info)); //Flipflop this when needed
+  Geolocation.getCurrentPosition(info => console.log(info)); //Does not work on emulator.
 
 };
-
-// New data Storage system is async storage https://react-native-async-storage.github.io/async-storage/docs/usage/
 
 export default function AlarmTracker() {
   const [alarmList, setAlarmList]= useState([]);
@@ -66,15 +64,27 @@ export default function AlarmTracker() {
   //     "alarm_latitude": "51.48257660",
   //     "alarm_longitude": "-0.00765890",
   //     "alarm_status": "false"
-  //   },    
+  //     "alarm_geo_status": "true"
+  //   },
   //   {
-  //     id: 2,
+  //     "id": "2",
+  //     "alarm_name": "Greenwich",
+  //     "alarm_days": "null",
+  //     "alarm_time": "00:00:00",
+  //     "alarm_latitude": null,
+  //     "alarm_longitude": null,
+  //     "alarm_status": false
+  //     "alarm_geo_status": false
+  //   },
+  //   {
+  //     id: 3,
   //     alarm_name: "CC",
   //     alarm_days: null,
   //     alarm_time: "09:15:00",
   //     alarm_latitude: 35.6579296, 
   //     alarm_longitude: 139.7276436,
   //     alarm_status: true
+  //     alarm_geo_status: true
   //   }
   // ];
   
@@ -82,7 +92,8 @@ export default function AlarmTracker() {
   // const [nextAlarm, setNextAlarm] = useState();
   const [currentLatitude, setCurrentLatitude] = useState();
   const [currentLongitude, setCurrentLongitude] = useState();
-
+  
+//https://github.com/michalchudziak/react-native-geolocation
   function GetCurrentLocationExample() {
     const getCurrentPosition = () => {
       Geolocation.getCurrentPosition(
@@ -95,60 +106,7 @@ export default function AlarmTracker() {
     };
   }
   const [position, setPosition] = useState<string | null>(null);
-  
-  
-  const alarmGetter = () => {
-    api.get('/api/alarms', {
-      responseType: "json",
-    })
-    .then(function (response) {
-      alarmList = response;
-    })
-  }
 
-  const compareLocation = () => {
-    if (alarmList[1].alarm_latitude - currentLatitude > 0.0000001 || alarmList[1].alarm_longitude - currentLongitude > 0.0000001) {
-      alarmList[1].alarm_status = false;
-
-      // api.put("/api/alarms/", {
-      //   alarm_status
-      // })
-
-    } else {
-      alarmList[1].alarm_status = true;
-    }
-  }
-/*
-  useEffect(() => {
-    const interval = setInterval( async () => {
-      await alarmGetter();
-      await checkLocation();
-      await compareLocation();
-      await console.log(alarmList);
-    }, 1000);
-  
-    return () => clearInterval(interval);
-  }, []);
-*/
-
-  // const alarmDisplay = async () => {
-    
-  //   await alarmGetter();
-
-  //   for (let i = 0; i < alarmList.length; i++) {
-  //     return (
-  //       <div>
-  //         <h4>{`Name: ${alarmList[i].alarm_name}`}</h4>
-  //         <div>{`Time: ${alarmList[i].alarm_time}`}</div>
-  //         <div>{`Latitude: ${alarmList[i].alarm_latitude}`}</div>
-  //         <div>{`Longitude: ${alarmList[i].alarm_longitude}`}</div>
-  //         <div>{`Status: ${alarmList[i].alarm_status}`}</div>
-  //       </div>
-  //     )
-  //   }
-  // }
-
-  // setInterval(alarmGetter)
   //style={styles.title}
   return (
     <View>
